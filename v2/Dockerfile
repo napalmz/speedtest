@@ -9,12 +9,26 @@ RUN git clone https://github.com/taganaka/SpeedTest.git . \
 # use
 FROM alpine:latest
 LABEL maintainer "NapalmZ <admin@napalmz.eu>"
+LABEL version "2"
+
+ENV TZ=Europe/Rome
+# Default 300s
+ENV GENERAL_DELAY=300
+ENV GENERAL_OUTPUT=
+# Connection to InfluxDb2
+ENV INFLUX_URL=http://influxdb:8086
+ENV INFLUX_TOKEN=my-token
+ENV INFLUX_ORG=my-org
+ENV INFLUX_BUCKET=my-bucket
+# Choose server, Leave blank to auto pick server
+ENV SPEEDTEST_SERVER=
 
 RUN apk add --no-cache dumb-init libcurl libxml2 libstdc++ libgcc python3 py3-pip procps
 COPY --from=compiler /build/SpeedTest /usr/local/bin/SpeedTest
 
 VOLUME /src/
-COPY requirements.txt speed2influx.py config.ini /src/
+#COPY requirements.txt speed2influx.py config.ini /src/
+COPY requirements.txt speed2influx.py /src/
 WORKDIR /src
 
 RUN python3 -m pip install --upgrade pip && \

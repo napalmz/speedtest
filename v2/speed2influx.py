@@ -9,17 +9,19 @@ from influxdb_client.client.write_api  import SYNCHRONOUS
 class configManager():
 
     def __init__(self, config):
-        print('Loading Configuration File {}'.format(config))
-        self.test_server = []
-        config_file = os.path.join(os.getcwd(), config)
-        if os.path.isfile(config_file):
-            self.config = configparser.ConfigParser()
-            self.config.read(config_file)
-        else:
-            print('ERROR: Unable To Load Config File: {}'.format(config_file))
-            sys.exit(1)
+        #print('Loading Configuration File {}'.format(config))
+        #self.test_server = []
+        #config_file = os.path.join(os.getcwd(), config)
+        #if os.path.isfile(config_file):
+        #    self.config = configparser.ConfigParser()
+        #    self.config.read(config_file)
+        #else:
+        #    print('ERROR: Unable To Load Config File: {}'.format(config_file))
+        #    sys.exit(1)
+        #self._load_config_values()
 
-        self._load_config_values()
+        print('Loading Configuration Enviroments')
+        self._load_env_values()
         print('Configuration Successfully Loaded')
 
     def _load_config_values(self):
@@ -28,6 +30,7 @@ class configManager():
         self.delay  = self.config['GENERAL'].getint('Delay', fallback=2)
         self.output = self.config['GENERAL'].getboolean('Output', fallback=True)
 
+        # Influxdb2
         self.influx_url    = self.config['INFLUXDB'].get('Url', fallback='http://localhost:8086')
         self.influx_token  = self.config['INFLUXDB'].get('Token', fallback='')
         self.influx_org    = self.config['INFLUXDB'].get('Org', fallback='')
@@ -35,6 +38,23 @@ class configManager():
 
         # Speedtest
         test_server = self.config['SPEEDTEST'].get('Server', fallback=None)
+        if test_server:
+            self.test_server.append(test_server)
+
+    def _load_env_values(self):
+
+        # General
+        self.delay  = int(os.environ.get('GENERAL_DELAY', 2))
+        self.output = os.environ.get('GENERAL_OUTPUT', True)
+
+        # Influxdb2
+        self.influx_url    = os.environ.get('INFLUX_URL', 'http://localhost:8086')
+        self.influx_token  = os.environ.get('INFLUX_TOKEN', 'my-token')
+        self.influx_org    = os.environ.get('INFLUX_ORG', 'my-org')
+        self.influx_bucket = os.environ.get('INFLUX_BUCKET', 'my-bucket')
+
+        # Speedtest
+        test_server = os.environ.get('SPEEDTEST_SERVER')
         if test_server:
             self.test_server.append(test_server)
 

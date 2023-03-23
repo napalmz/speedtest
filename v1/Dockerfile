@@ -9,6 +9,7 @@ RUN git clone https://github.com/taganaka/SpeedTest.git . \
 # use
 FROM alpine:latest
 LABEL maintainer "NapalmZ <admin@napalmz.eu>"
+LABEL version "1"
 
 RUN apk add --no-cache dumb-init libcurl libxml2 libstdc++ libgcc python3 py3-pip procps
 COPY --from=compiler /build/SpeedTest /usr/local/bin/SpeedTest

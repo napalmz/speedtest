@@ -7,14 +7,10 @@ RUN git clone https://github.com/taganaka/SpeedTest.git . \
   && make
 
 # use
-#FROM python:3.11.0a3-slim-bullseye
 FROM alpine:latest
 LABEL maintainer "NapalmZ <admin@napalmz.eu>"
 
 RUN apk add --no-cache dumb-init libcurl libxml2 libstdc++ libgcc python3 py3-pip procps
-#RUN apt-get update && \
-#    apt-get upgrade -y && \
-#    apt-get install -y dumb-init libcurl4 libxml2 libstdc++ libgcc1
 COPY --from=compiler /build/SpeedTest /usr/local/bin/SpeedTest
 
 VOLUME /src/
